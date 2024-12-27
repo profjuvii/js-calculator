@@ -10,38 +10,33 @@ let actions = document.querySelectorAll("button");
 
 actions.forEach(action => {
     action.onclick = function() {
-        if (action.innerHTML !== "DEL") expressionArea.innerHTML = "";
+        if (action.innerHTML !== "DEL" && !(isOperation(action.innerHTML) && isUndefined(res)
+            || action.innerHTML === '%' && isUndefined(res)) && action.innerHTML !== '=') {
+            expressionArea.innerHTML = "";
+        }
 
         let digit = parseInt(action.innerHTML);
 
         if (!isNaN(digit)) {
-            if (str !== "0") {
-                str += digit;
-            } else if (str === "0") {
-                str = "" + digit;
-            }
+            str = (str !== "0") ? str + digit : "" + digit;
             
         } else if (action.innerHTML === ',' && !str.includes('.')) {
-            if (str !== "") {
-                str += '.';
-            } else {
-                str = "0.";
-            }
+            str = (str !== "") ? str + '.' : "0.";
 
-        } else if (action.innerHTML === "DEL" && str !== "0") {
-            str = str.slice(0, str.length - 1);
+        } else if (action.innerHTML === "DEL" && str !== "" && expressionArea.innerHTML === "") {
+            str = (str.length > 1) ? str.slice(0, str.length - 1) : "0";
 
         } else if (action.innerHTML === "AC") {
             res = 0;
             str = "";
             operation = '';
 
-        } else if (isOp(action.innerHTML)) {
+        } else if (isOperation(action.innerHTML) && !(isUndefined(res) && str === "")) {
             res = (str !== "") ? parseFloat(str) : res;
             str = "";
             operation = action.innerHTML;
 
-        } else if (action.innerHTML === '%') {
+        } else if (action.innerHTML === '%' && !(isUndefined(res) && str === "")) {
             res = ((str !== "") ? parseFloat(str) : res) / 100;
             str = "";
 
@@ -50,20 +45,14 @@ actions.forEach(action => {
 
             expressionArea.innerHTML = "" + res + operation + val;
 
-            switch (operation) {
-                case '÷':
-                    res /= val;
-                    break;
-                case '×': 
-                    res *= val;
-                    break;
-                case '-': 
-                    res -= val;
-                    break;
-                case '+': 
-                    res += val;
-                    break;
+            const operations = {
+                '÷': (a, b) => (b !== 0) ? a / b : "Undefined",
+                '×': (a, b) => a * b,
+                '-': (a, b) => a - b,
+                '+': (a, b) => a + b,
             }
+
+            res = operations[operation](res, val);
 
             str = "";
             operation = '';
@@ -73,6 +62,10 @@ actions.forEach(action => {
     };
 });
 
-function isOp(op) {
+function isUndefined(val) {
+    return val === "Undefined";
+}
+
+function isOperation(op) {
     return ['÷', '×', '-', '+'].includes(op);
 }
