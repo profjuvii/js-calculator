@@ -4,4 +4,6 @@ This is a simple and functional calculator built using HTML, CSS, and JavaScript
 
 ## Calculator Design
 
-![Calculator Design](calculator-screenshot.png)
+Below is a visual representation of the calculator's design:
+
+<img src="images/calculator-screenshot.png" alt="Calculator Design" width="600" />
