@@ -6,4 +6,4 @@ This is a simple and functional calculator built using HTML, CSS, and JavaScript
 
 Below is a visual representation of the calculator's design:
 
-<img src="calculator-screenshot.png" alt="Calculator Design" width="300" />
+<img src="calculator-screenshot.png" alt="Calculator Design" width="350" />
