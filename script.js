@@ -10,12 +10,16 @@ let actions = document.querySelectorAll("button");
 
 actions.forEach(action => {
     action.onclick = function() {
-        expressionArea.innerHTML = "";
+        if (action.innerHTML !== "DEL") expressionArea.innerHTML = "";
 
         let digit = parseInt(action.innerHTML);
 
-        if (!isNaN(digit) && !(str === "" && digit === 0 && res === 0) && str !== "0") {
-            str += digit;
+        if (!isNaN(digit)) {
+            if (str !== "0") {
+                str += digit;
+            } else if (str === "0") {
+                str = "" + digit;
+            }
             
         } else if (action.innerHTML === ',' && !str.includes('.')) {
             if (str !== "") {
@@ -24,7 +28,7 @@ actions.forEach(action => {
                 str = "0.";
             }
 
-        } else if (action.innerHTML === "DEL" && str !== "") {
+        } else if (action.innerHTML === "DEL" && str !== "0") {
             str = str.slice(0, str.length - 1);
 
         } else if (action.innerHTML === "AC") {
@@ -32,7 +36,7 @@ actions.forEach(action => {
             str = "";
             operation = '';
 
-        } else if (isOp(action.innerHTML) && parseFloat(str) !== 0) {
+        } else if (isOp(action.innerHTML)) {
             res = (str !== "") ? parseFloat(str) : res;
             str = "";
             operation = action.innerHTML;
