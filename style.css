@@ -25,13 +25,19 @@ body {
     border-radius: 48px;
 }
 
-.display-area {
+.display-area, .expression-area {
     max-width: 100%;
     overflow-x: auto;
     white-space: nowrap;
     margin: 0 5px;
     text-align: right;
+    color: #100D08;
     font-size: 38px;
+}
+
+.expression-area {
+    color: #373737;
+    font-size: 24px;
 }
 
 .section-area {

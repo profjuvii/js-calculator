@@ -1,23 +1,30 @@
-let str = "";
 let res = 0;
+let str = "";
 let operation = '';
 
 let display = document.querySelector(".display-area");
 display.innerHTML = 0;
 
-actions = document.querySelectorAll("button");
+let expressionArea = document.querySelector(".expression-area");
+let actions = document.querySelectorAll("button");
 
 actions.forEach(action => {
     action.onclick = function() {
+        expressionArea.innerHTML = "";
+
         let digit = parseInt(action.innerHTML);
 
-        if (!isNaN(digit)) {
+        if (!isNaN(digit) && !(str === "" && digit === 0 && res === 0) && str !== "0") {
             str += digit;
             
-        } else if (action.innerHTML === ',' && !str.includes(',') && str !== "") {
-            str += '.';
+        } else if (action.innerHTML === ',' && !str.includes('.')) {
+            if (str !== "") {
+                str += '.';
+            } else {
+                str = "0.";
+            }
 
-        } else if (action.innerHTML === "DEL" && str.length > 0) {
+        } else if (action.innerHTML === "DEL" && str !== "") {
             str = str.slice(0, str.length - 1);
 
         } else if (action.innerHTML === "AC") {
@@ -25,7 +32,7 @@ actions.forEach(action => {
             str = "";
             operation = '';
 
-        } else if (isOp(action.innerHTML)) {
+        } else if (isOp(action.innerHTML) && parseFloat(str) !== 0) {
             res = (str !== "") ? parseFloat(str) : res;
             str = "";
             operation = action.innerHTML;
@@ -36,6 +43,8 @@ actions.forEach(action => {
 
         } else if (action.innerHTML === '=' && str !== '' && operation !== '') {
             let val = parseFloat(str);
+
+            expressionArea.innerHTML = "" + res + operation + val;
 
             switch (operation) {
                 case '÷':
@@ -55,7 +64,7 @@ actions.forEach(action => {
             str = "";
             operation = '';
         }
-
+        
         display.innerHTML = (str !== "") ? str : res;
     };
 });
