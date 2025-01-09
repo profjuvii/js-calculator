@@ -1,71 +1,110 @@
-let res = 0;
-let str = "";
-let operation = '';
+function calculatorApp() {
+    let result = 0;
+    let currentInput = "";
+    let operation = '';
 
-let display = document.querySelector(".display-area");
-display.innerHTML = 0;
+    let display = document.querySelector(".display-area");
+    display.innerHTML = 0;
 
-let expressionArea = document.querySelector(".expression-area");
-let actions = document.querySelectorAll("button");
+    let expressionArea = document.querySelector(".expression-area");
+    let actions = document.querySelectorAll("button");
 
-actions.forEach(action => {
-    action.onclick = function() {
-        if (action.innerHTML !== "DEL" && !(isOperation(action.innerHTML) && isUndefined(res)
-            || action.innerHTML === '%' && isUndefined(res)) && action.innerHTML !== '=') {
-            expressionArea.innerHTML = "";
-        }
+    const actionsMap = {
+        ',': handleDecimal,
+        'DEL': handleDelete,
+        'AC': resetCalculator,
+        '%': handlePercentage,
+        '=': handleEquals,
+    };
 
-        let digit = parseInt(action.innerHTML);
+    actions.forEach(action => {
+        action.onclick = function() {
+            const actionType = action.innerHTML;
 
-        if (!isNaN(digit)) {
-            str = (str !== "0") ? str + digit : "" + digit;
-            
-        } else if (action.innerHTML === ',' && !str.includes('.')) {
-            str = (str !== "") ? str + '.' : "0.";
-
-        } else if (action.innerHTML === "DEL" && str !== "" && expressionArea.innerHTML === "") {
-            str = (str.length > 1) ? str.slice(0, str.length - 1) : "0";
-
-        } else if (action.innerHTML === "AC") {
-            res = 0;
-            str = "";
-            operation = '';
-
-        } else if (isOperation(action.innerHTML) && !(isUndefined(res) && str === "")) {
-            res = (str !== "") ? parseFloat(str) : res;
-            str = "";
-            operation = action.innerHTML;
-
-        } else if (action.innerHTML === '%' && !(isUndefined(res) && str === "")) {
-            res = ((str !== "") ? parseFloat(str) : res) / 100;
-            str = "";
-
-        } else if (action.innerHTML === '=' && str !== '' && operation !== '') {
-            let val = parseFloat(str);
-
-            expressionArea.innerHTML = "" + res + operation + val;
-
-            const operations = {
-                '÷': (a, b) => (b !== 0) ? a / b : "Undefined",
-                '×': (a, b) => a * b,
-                '-': (a, b) => a - b,
-                '+': (a, b) => a + b,
+            if (actionType !== "DEL" && !((isOperation(actionType) || actionType === '%')
+                && isUndefined(result)) && actionType !== '=') {
+                expressionArea.innerHTML = "";
             }
 
-            res = operations[operation](res, val);
+            if (isDigit(actionType)) handleDigit(actionType);
+            else if (isOperation(actionType)) handleOperation(actionType);
+            else if (actionsMap[actionType]) actionsMap[actionType]();
+            
+            updateDisplay();
+        };
+    });
 
-            str = "";
-            operation = '';
+    function isDigit(val) {
+        return !isNaN(parseInt(val));
+    }
+
+    function isUndefined(val) {
+        return val === "Undefined";
+    }
+
+    function isOperation(op) {
+        return ['÷', '×', '-', '+'].includes(op);
+    }
+
+    function applyOperation(op, val1, val2) {
+        const operations = {
+            '÷': (a, b) => (b !== 0) ? a / b : "Undefined",
+            '×': (a, b) => a * b,
+            '-': (a, b) => a - b,
+            '+': (a, b) => a + b,
         }
+        return operations[op](val1, val2);
+    }
+
+    function handleDigit(digit) {
+        currentInput = (currentInput !== "0") ? currentInput + digit : digit;
+    }
+
+    function handleDecimal() {
+        if (currentInput.includes('.')) return;
+        currentInput = (currentInput || '0') + '.';
+    }
+
+    function handleDelete() {
+        if (!currentInput || expressionArea.innerHTML) return;
+        currentInput = (currentInput.length > 1) ? currentInput.slice(0, currentInput.length - 1) : "0";
+    }
+
+    function resetCalculator() {
+        result = 0;
+        currentInput = "";
+        operation = '';
+    }
+
+    function handlePercentage() {
+        if (isUndefined(result) && !currentInput) return;
+        result = (currentInput ? parseFloat(currentInput) : result) / 100;
+        currentInput = "";
+    }
+
+    function handleOperation(op) {
+        if (isUndefined(result) && !currentInput) return;
+        const value = parseFloat(currentInput);
         
-        display.innerHTML = (str !== "") ? str : res;
-    };
-});
+        result = currentInput ? operation ? applyOperation(operation, result, value) : value : result;
+        currentInput = "";
+        operation = op;
+    }
 
-function isUndefined(val) {
-    return val === "Undefined";
+    function handleEquals() {
+        if (!currentInput || !operation) return;
+        const value = parseFloat(currentInput);
+
+        expressionArea.innerHTML = "" + result + operation + value;
+
+        result = applyOperation(operation, result, value)
+        currentInput = "";
+        operation = '';
+    }
+
+    function updateDisplay() {
+        display.innerHTML = currentInput || result;
+    }
 }
 
-function isOperation(op) {
-    return ['÷', '×', '-', '+'].includes(op);
-}
+document.addEventListener('DOMContentLoaded', calculatorApp);
