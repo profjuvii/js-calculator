@@ -79,6 +79,10 @@ button.unique:active {
 }
 
 @media (max-width: 768px) {
+    button {
+        transition: background-color 1s ease;
+    }
+
     button:hover {
         background-color: #66b2ff;
     }
