@@ -86,8 +86,8 @@ button.unique:active {
     button:hover {
         background-color: #66b2ff;
     }
-    
-    button:active {
-        background-color: #0080ff;
+
+    button.unique:hover {
+        background-color: #ff6666;
     }
 }
