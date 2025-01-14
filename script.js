@@ -46,15 +46,16 @@ function calculatorApp() {
         return ['÷', '×', '-', '+'].includes(op);
     }
 
-    function applyOperation(op, val1, val2) {
+    function applyOperation(op, val1, val2, precision = 10) {
         const operations = {
-            '÷': (a, b) => (b !== 0) ? roundTo(a / b, 10) : "Undefined",
-            '×': (a, b) => roundTo(a * b, 10),
-            '-': (a, b) => roundTo(a - b, 10),
-            '+': (a, b) => roundTo(a + b, 10),
+            '÷': (a, b) => (b !== 0) ? (a / b).toFixed(precision) : "Undefined",
+            '×': (a, b) => (a * b).toFixed(precision),
+            '-': (a, b) => (a - b).toFixed(precision),
+            '+': (a, b) => (a + b).toFixed(precision),
         };
-    
-        return operations[op](val1, val2);
+        
+        const result = operations[op](val1, val2);
+        return (result !== "Undefined") ? parseFloat(result) : result;
     }
 
     function handleDigit(digit) {

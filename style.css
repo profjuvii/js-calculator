@@ -63,7 +63,7 @@ button:hover {
 }
 
 button:active {
-    background-color: #0080ff;
+    background-color: #0066cc;
 }
 
 button.unique {
@@ -75,7 +75,7 @@ button.unique:hover {
 }
 
 button.unique:active {
-    background-color: #ff0000;
+    background-color: #cc0000;
 }
 
 @media (max-width: 768px) {
