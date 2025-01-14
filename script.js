@@ -48,11 +48,12 @@ function calculatorApp() {
 
     function applyOperation(op, val1, val2) {
         const operations = {
-            '÷': (a, b) => (b !== 0) ? a / b : "Undefined",
-            '×': (a, b) => a * b,
-            '-': (a, b) => a - b,
-            '+': (a, b) => a + b,
-        }
+            '÷': (a, b) => (b !== 0) ? roundTo(a / b, 10) : "Undefined",
+            '×': (a, b) => roundTo(a * b, 10),
+            '-': (a, b) => roundTo(a - b, 10),
+            '+': (a, b) => roundTo(a + b, 10),
+        };
+    
         return operations[op](val1, val2);
     }
 
